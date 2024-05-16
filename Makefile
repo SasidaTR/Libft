@@ -1,0 +1,36 @@
+# Nom de la bibliothèque
+NAME = libft.a
+
+# Options de compilation
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
+
+# Liste des fichiers sources
+SRCS = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c ft_memset.c ft_bzero.c ft_memcpy.c ft_strlcpy.c ft_strlcat.c
+
+# Générer les noms des fichiers objets correspondants
+OBJS = $(SRCS:.c=.o)
+
+# Règle par défaut (all)
+all: $(NAME)
+
+# Règle pour créer la bibliothèque
+$(NAME): $(OBJS)
+	ar -rcs $(NAME) $(OBJS)
+
+# Règle pour compiler les fichiers objets
+%.o: %.c
+		$(CC) $(CFLAGS) -c $< -o $@
+
+# Règle pour nettoyer les fichiers objets et la bibliothèque
+clean:
+		rm -rf $(OBJS)
+
+fclean: clean
+		rm -rf $(NAME)
+
+# Règle pour recompiler tout depuis zéro
+re: fclean all
+
+# Indiquer que ces règles ne sont pas des fichiers réels
+.PHONY: all clean fclean re
