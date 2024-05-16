@@ -9,3 +9,18 @@
 /*   Updated: 2024/05/15 13:09:48 by trischma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "libft.h"
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if (c == '\0')
+		return (char *)s;
+	return (NULL);
+}
