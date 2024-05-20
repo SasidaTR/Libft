@@ -12,52 +12,26 @@
 
 #include "libft.h"
 
-static void	ft_itoa_fill(char *str, int n, int len)
+void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	str[len] = '\0';
-	if (n == 0)
-		str[0] = '0';
-	else if (n < 0)
+	unsigned char		*d;
+	const unsigned char	*s;
+
+	d = (unsigned char *)dest;
+	s = (const unsigned char *)src;
+	if (!dest && !src)
+		return (NULL);
+	if (d < s)
 	{
-		str[0] = '-';
-		while (len-- > 1)
-		{
-			str[len] = -(n % 10) + '0';
-			n /= 10;
-		}
+		while (n--)
+			*d++ = *s++;
 	}
 	else
 	{
-		while (len-- > 0)
-		{
-			str[len] = (n % 10) + '0';
-			n /= 10;
-		}
+		d += n;
+		s += n;
+		while (n--)
+			*--d = *--s;
 	}
-}
-
-static int	ft_numlen(int n)
-{
-	int	len;
-
-	len = (n <= 0) ? 1 : 0;
-	while (n)
-	{
-		len++;
-		n /= 10;
-	}
-	return (len);
-}
-
-char	*ft_itoa(int n)
-{
-	char	*str;
-	int		len;
-
-	len = ft_numlen(n);
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	if (!str)
-		return (NULL);
-	ft_itoa_fill(str, n, len);
-	return (str);
+	return (dest);
 }

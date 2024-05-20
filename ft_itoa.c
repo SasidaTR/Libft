@@ -10,31 +10,56 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include "libft.h"
 
-static void	ft_putnbr_recursive(int n, int fd)
+static void	ft_itoa_fill(char *str, int n, int len)
 {
-	if (n >= 10)
-		ft_putnbr_recursive(n / 10, fd);
-	ft_putchar_fd((n % 10) + '0', fd);
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	if (n == -2147483648)
+	str[len] = '\0';
+	if (n == 0)
+		str[0] = '0';
+	else if (n < 0)
 	{
-		ft_putchar_fd('-', fd);
-		ft_putchar_fd('2', fd);
-		ft_putnbr_recursive(147483648, fd);
+		str[0] = '-';
+		while (len-- > 1)
+		{
+			str[len] = -(n % 10) + '0';
+			n /= 10;
+		}
 	}
 	else
 	{
-		if (n < 0)
+		while (len-- > 0)
 		{
-			ft_putchar_fd('-', fd);
-			n = -n;
+			str[len] = (n % 10) + '0';
+			n /= 10;
 		}
-		ft_putnbr_recursive(n, fd);
 	}
+}
+
+static int	ft_numlen(int n)
+{
+	int	len;
+
+	len = 0;
+	if (n <= 0)
+		len = 1;
+	while (n)
+	{
+		len++;
+		n /= 10;
+	}
+	return (len);
+}
+
+char	*ft_itoa(int n)
+{
+	char	*str;
+	int		len;
+
+	len = ft_numlen(n);
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	ft_itoa_fill(str, n, len);
+	return (str);
 }
