@@ -12,17 +12,13 @@
 
 #include "libft.h"
 
-void	*ft_calloc(size_t count, size_t size)
+void	ft_putstr_fd(char *s, int fd)
 {
-	size_t	total_size;
-	void	*ptr;
-
-	if (size != 0 && count > (size_t)-1 / size)
-		return (NULL);
-	total_size = count * size;
-	ptr = malloc(total_size);
-	if (!ptr)
-		return (NULL);
-	ft_memset(ptr, 0, total_size);
-	return (ptr);
+	if (!s)
+		return ;
+	while (*s)
+	{
+		write(fd, s, 1);
+		s++;
+	}
 }
