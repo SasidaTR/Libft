@@ -55,4 +55,14 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 
+// Structure pour la liste chaînée
+typedef struct s_list
+{
+	void			*content;
+	struct s_list	*next;
+}	t_list;
+
+// Déclarations des fonctions bonus
+t_list	*ft_lstnew(void *content);
+
 #endif
