@@ -12,106 +12,93 @@
 
 #include "libft.h"
 
-static size_t	count_segments(const char *s, char c)
+static char	*malloc_word(const char *s, char c)
 {
-	size_t	count;
-	int		in_segment;
+	int		len;
+	char	*word;
+
+	len = 0;
+	while (s[len] && s[len] != c)
+		len++;
+	word = (char *)malloc(sizeof(char) * (len + 1));
+	if (!word)
+		return (NULL);
+	len = 0;
+	while (s[len] && s[len] != c)
+	{
+		word[len] = s[len];
+		len++;
+	}
+	word[len] = '\0';
+	return (word);
+}
+
+static void	free_all(char **result, int i)
+{
+	while (i > 0)
+		free(result[--i]);
+	free(result);
+}
+
+static int	count_words(const char *s, char c)
+{
+	int	count;
+	int	in_word;
 
 	count = 0;
-	in_segment = 0;
+	in_word = 0;
 	while (*s)
 	{
-		if (*s != c && !in_segment)
+		if (*s != c && !in_word)
 		{
-			in_segment = 1;
+			in_word = 1;
 			count++;
 		}
 		else if (*s == c)
-		{
-			in_segment = 0;
-		}
+			in_word = 0;
 		s++;
 	}
 	return (count);
 }
 
-static char	*copy_segment(const char *start, size_t len)
+static int	split_fill(char **result, const char *s, char c)
 {
-	char	*segment;
-	size_t	i;
-
-	segment = (char *)malloc((len + 1) * sizeof(char));
-	if (!segment)
-	{
-		return (NULL);
-	}
-	i = 0;
-	while (i < len)
-	{
-		segment[i] = start[i];
-		i++;
-	}
-	segment[len] = '\0';
-	return (segment);
-}
-
-static void	free_segments(char **segments, size_t count)
-{
-	size_t	i;
+	int	i;
 
 	i = 0;
-	while (i < count)
+	while (*s)
 	{
-		free(segments[i]);
-		i++;
-	}
-	free(segments);
-}
-
-static char	**allocate_segments(char const *s, char c, size_t segment_count)
-{
-	char	**segments;
-	size_t	i;
-	size_t	len;
-
-	segments = (char **)malloc((segment_count + 1) * sizeof(char *));
-	if (!segments)
-	{
-		return (NULL);
-	}
-	i = 0;
-	while (*s && i < segment_count)
-	{
-		while (*s == c)
+		if (*s != c)
 		{
+			result[i] = malloc_word(s, c);
+			if (!result[i])
+			{
+				free_all(result, i);
+				return (0);
+			}
+			i++;
+			while (*s && *s != c)
+				s++;
+		}
+		else
 			s++;
-		}
-		len = 0;
-		while (s[len] && s[len] != c)
-		{
-			len++;
-		}
-		segments[i] = copy_segment(s, len);
-		if (!segments[i])
-		{
-			free_segments(segments, i);
-			return (NULL);
-		}
-		s += len;
-		i++;
 	}
-	segments[i] = NULL;
-	return (segments);
+	result[i] = NULL;
+	return (1);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	size_t	segment_count;
+	char	**result;
+	int		words;
 
 	if (!s)
-	{
 		return (NULL);
-	}
-	segment_count = count_segments(s, c);
-	return (allocate_segments(s, c, segment_count));
+	words = count_words(s, c);
+	result = (char **)malloc(sizeof(char *) * (words + 1));
+	if (!result)
+		return (NULL);
+	if (!split_fill(result, s, c))
+		return (NULL);
+	return (result);
 }
