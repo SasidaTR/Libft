@@ -12,21 +12,26 @@
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	char	*joined_str;
-	size_t	s1_len;
-	size_t	s2_len;
+	char	*trimmed_str;
+	size_t	start;
+	size_t	end;
+	size_t	len;
 
-	if (!s1 || !s2)
+	if (!s1 || !set)
 		return (NULL);
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	joined_str = (char *)malloc((s1_len + s2_len + 1) * sizeof(char));
-	if (!joined_str)
+	start = 0;
+	end = ft_strlen(s1);
+	while (s1[start] && ft_strchr(set, s1[start]))
+		start++;
+	while (end > start && ft_strchr(set, s1[end - 1]))
+		end--;
+	len = end - start;
+	trimmed_str = (char *)malloc((len + 1) * sizeof(char));
+	if (!trimmed_str)
 		return (NULL);
-	ft_memcpy(joined_str, s1, s1_len);
-	ft_memcpy(joined_str + s1_len, s2, s2_len);
-	joined_str[s1_len + s2_len] = '\0';
-	return (joined_str);
+	ft_memcpy(trimmed_str, s1 + start, len);
+	trimmed_str[len] = '\0';
+	return (trimmed_str);
 }
